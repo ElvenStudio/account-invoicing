@@ -45,10 +45,10 @@ Franco Tampieri <franco@tampieri.info>
     'license': 'AGPL-3',
     "depends": ['account_move_template'],
     "data": [
-        'invoice_template.xml',
+        'view/invoice_template.xml',
         'wizard/select_template.xml',
         'security/ir.model.access.csv',
     ],
     "active": False,
-    "installable": False
+    "installable": True
 }
