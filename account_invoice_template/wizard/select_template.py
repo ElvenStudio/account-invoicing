@@ -21,6 +21,7 @@
 
 from openerp.osv import fields, orm
 from openerp.tools.translate import _
+from openerp.exceptions import except_orm
 
 
 class wizard_select_template(orm.TransientModel):
@@ -38,9 +39,24 @@ class wizard_select_template(orm.TransientModel):
         ], 'State'),
     }
 
+    def check_zero_lines(self, cr, uid, ids, context=None):
+        if len(ids) != 1:
+            raise except_orm("ValueError", "Expected singleton: %s" % ids)
+        wizard = self.pool.get('wizard.select.invoice.template').browse(cr, uid, ids[0], context=context)
+
+        if not wizard.line_ids:
+            return True
+
+        for template_line in wizard.line_ids:
+            if template_line.amount:
+                return True
+
+        return False
+
     def load_lines(self, cr, uid, ids, context=None):
         wizard = self.browse(cr, uid, ids, context=context)[0]
         template_pool = self.pool.get('account.invoice.template')
+        wizard_pool = self.pool.get('wizard.select.invoice.template')
         wizard_line_pool = self.pool.get('wizard.select.invoice.template.line')
         model_data_obj = self.pool.get('ir.model.data')
 
@@ -60,7 +76,8 @@ class wizard_select_template(orm.TransientModel):
                 }, context=context)
         if not wizard.line_ids:
             return self.load_template(cr, uid, ids, context=context)
-        wizard.write({'state': 'template_selected'}, context=context)
+
+        wizard_pool.write(cr, uid, [wizard.id], {'state': 'template_selected'}, context=context)
 
         view_rec = model_data_obj.get_object_reference(
             cr, uid,
@@ -79,15 +96,15 @@ class wizard_select_template(orm.TransientModel):
         }
 
     def load_template(self, cr, uid, ids, context=None):
-        if context is None:
-            context = {}
         template_obj = self.pool.get('account.invoice.template')
         account_invoice_obj = self.pool.get('account.invoice')
         account_invoice_line_obj = self.pool.get('account.invoice.line')
+        wizard_pool = self.pool.get('wizard.select.invoice.template')
         mod_obj = self.pool.get('ir.model.data')
 
+        context = {} if context is None else context.copy()
         wizard = self.browse(cr, uid, ids, context=context)[0]
-        if not template_obj.check_zero_lines(cr, uid, wizard):
+        if not wizard_pool.check_zero_lines(cr, uid, [wizard.id], context=context):
             raise orm.except_orm(
                 _('Error !'),
                 _('At least one amount has to be non-zero!'))
