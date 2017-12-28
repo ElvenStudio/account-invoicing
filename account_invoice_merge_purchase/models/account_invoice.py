@@ -15,10 +15,11 @@ class AccountInvoice(models.Model):
         return res
 
     @api.multi
-    def do_merge(self, keep_references=True, date_invoice=False):
+    def do_merge(self, keep_references=True, date_invoice=False, keep_lines_references=True):
         invoices_info, invoice_lines_info = super(
             AccountInvoice, self).do_merge(keep_references=keep_references,
-                                           date_invoice=date_invoice)
+                                           date_invoice=date_invoice,
+                                           keep_lines_references=keep_lines_references)
         po_obj = self.env['purchase.order']
         for new_invoice_id in invoices_info:
             todos = po_obj.search(

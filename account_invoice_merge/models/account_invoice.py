@@ -64,11 +64,10 @@ class AccountInvoice(models.Model):
         uom_factor = uom.factor if uom.exists() else 1.0
         uos_factor = new_invoice_line.uos_id.factor or 1.0
         # merge the line with an existing line
-        vals['quantity'] += (new_invoice_line.quantity *
-                             uos_factor / uom_factor)
+        vals['quantity'] += (new_invoice_line.quantity * uos_factor / uom_factor)
 
     @api.multi
-    def do_merge(self, keep_references=True, date_invoice=False):
+    def do_merge(self, keep_references=True, date_invoice=False, keep_lines_references=True):
         """
         To merge similar type of account invoices.
         Invoices will only be merged if:
@@ -81,9 +80,9 @@ class AccountInvoice(models.Model):
 
          @param self: The object pointer.
          @param keep_references: If True, keep reference of original invoices
-
+         @param date_invoice: If sets, use the given date otherwise it will keep the context today
+         @param keep_lines_references: If True, keeps invoice line references and will not merge lines 
          @return: new account invoice id
-
         """
         def make_key(br, fields):
             list_key = []
@@ -150,7 +149,7 @@ class AccountInvoice(models.Model):
                 line_key = make_key(
                     invoice_line, self._get_invoice_line_key_cols())
                 o_line = invoice_infos['invoice_line'].setdefault(line_key, {})
-                if o_line:
+                if o_line and not keep_lines_references:
                     self._merge_invoice_line_values(o_line, invoice_line)
                     o_line['o_line_ids'].append(invoice_line.id)
                 else:
