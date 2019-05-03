@@ -12,7 +12,11 @@ class InvoiceMerge(models.TransientModel):
 
     keep_references = fields.Boolean(string='Keep references from original invoices', default=True)
     date_invoice = fields.Date('Invoice Date')
-    keep_lines_references = fields.Boolean(string=_('Keep Invoice lines references'), default=True)
+    keep_lines_references = fields.Boolean(
+        string=_('Keep Invoice lines references'),
+        help=_('If enabled, keeps invoice line references and will not merge lines.'),
+        default=True
+    )
 
     @api.model
     def _dirty_check(self):
