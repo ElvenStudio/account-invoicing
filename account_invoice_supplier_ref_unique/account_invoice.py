@@ -32,14 +32,22 @@ class AccountInvoice(models.Model):
     supplier_invoice_number = fields.Char(copy=False)
 
     @api.one
-    @api.constrains('supplier_invoice_number')
+    @api.constrains('supplier_invoice_number', 'date_invoice', 'period_id')
     def _check_unique_supplier_invoice_number_insensitive(self):
+        if self.period_id:
+            fiscalyear_id = self.period_id.fiscalyear_id.id
+        else:
+            date = self.date_invoice if self.date_invoice else fields.Date.today()
+            period = self.env['account.period'].find(date)
+            fiscalyear_id = period.fiscalyear_id.id
+
         if (
                 self.supplier_invoice_number and
                 self.type in ('in_invoice', 'in_refund')):
             same_supplier_inv_num = self.search([
                 ('commercial_partner_id', '=', self.commercial_partner_id.id),
                 ('type', 'in', ('in_invoice', 'in_refund')),
+                ('period_id.fiscalyear_id', '=', fiscalyear_id),
                 ('supplier_invoice_number',
                  '=ilike',
                  self.supplier_invoice_number),
