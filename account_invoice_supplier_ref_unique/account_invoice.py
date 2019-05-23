@@ -48,7 +48,7 @@ class AccountInvoice(models.Model):
                 ('commercial_partner_id', '=', self.commercial_partner_id.id),
                 ('type', 'in', ('in_invoice', 'in_refund')),
                 ('period_id.fiscalyear_id', '=', fiscalyear.id),
-                ('date', '>', fiscalyear.date_start),
+                ('date_invoice', '>', fiscalyear.date_start),
                 ('supplier_invoice_number',
                  '=ilike',
                  self.supplier_invoice_number),
