@@ -6,6 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-04-10 17:35+0000\n"
+"PO-Revision-Date: 2018-04-10 17:35+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -147,7 +149,7 @@ msgid "Vendor Invoice Reception Method Code"
 msgstr ""
 
 #. module: account_invoice_transmit_method
-#: view:res.partner:account_invoice_transmit_method.view_partner_form
+#: view:res.partner:account_invoice_transmit_method.view_partner_property_form
 msgid "{'default_parent_id': active_id, 'default_street': street, 'default_street2': street2, 'default_city': city, 'default_state_id': state_id, 'default_zip': zip, 'default_country_id': country_id, 'default_supplier': supplier, 'default_customer': customer, 'default_use_parent_address': True, 'default_customer_invoice_transmit_method_code': customer_invoice_transmit_method_code, 'default_supplier_invoice_transmit_method_code': supplier_invoice_transmit_method_code}"
 msgstr ""
 
