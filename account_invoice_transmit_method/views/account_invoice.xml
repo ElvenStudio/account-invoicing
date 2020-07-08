@@ -18,9 +18,7 @@
                 domain="[('customer_ok', '=', True)]"/>
             <field name="transmit_method_code" invisible="1"/>
         </field>
-        <button name="action_invoice_sent" position="attributes">
-            <attribute name="attrs">{'invisible': ['|', '|', ('sent', '=', True), ('state', 'not in', ('open', 'paid')), ('transmit_method_code', 'not in', ('mail', False))]}</attribute> <!-- Only show the "Send by Mail" button when the transmit method is E-mail or empty. But I also modify the condition on 'state' field: we should be able to send the invoice by email even when the invoice is 'paid' (Even if the customer made an advance payment, he needs an invoice for his accounting !) -->
-        </button>
+        <button name="action_invoice_sent"> </button>
     </field>
 </record>
 
